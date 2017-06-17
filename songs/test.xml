@@ -1,0 +1,6 @@
+<tracker-ml>
+0x00| c-4,#kick;           ; c-4,#hi-hat;
+0x02|          ;           ; c-4,#hi-hat;
+0x04| c-4,#kick; c-4,#snare; c-4,#hi-hat;
+0x06|          ;           ; c-4,#hi-hat;
+</tracker-ml>
