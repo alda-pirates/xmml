@@ -2,31 +2,29 @@
 #ifndef TESTSAXHEANDLER_H
 #define TESTSAXHEANDLER_H
 
-#include "trackerml/ISAXHandler.h"
+#include "ISAXHandler.h"
 
 namespace trackerml {
-    
-    using namespace std;
     
     class TestSAXHandler: public ISAXHandler {
         
         public:
             
-            void characters(string text);
+            void characters(std::string text);
             
-            void comment(string text);
+            void comment(std::string text);
             
             void endDocument();
             
-            void endElement(string name);
+            void endElement(std::string name);
             
-            void error(string msg, int lineCount, int charCount);
+            void error(std::string msg, int lineCount, int charCount);
             
-            void processingInstruction(string text);
+            void processingInstruction(std::string text);
             
             void startDocument();
             
-            void startElement(string name, vector<pair <string, string> > attributes);
+            void startElement(std::string name, std::vector<std::pair <std::string, std::string> > attributes);
             
     };
     

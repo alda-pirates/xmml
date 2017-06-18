@@ -2,25 +2,34 @@
 #ifndef COMMANDCONTROLLER_H
 #define COMMANDCONTROLLER_H
 
+#include <vector>
 #include <string>
 
 namespace trackerml {
-    
-    using namespace std;
 
     class CommandController {
         
         public:
         
-        const static int COMPILE = 0, HELP = 1, DEBUG = 2;
+    	std::vector<std::string> commands = {
+    		"compile", 
+    		"help",
+    		"debug",
+    		"readprintxminfo",
+    		"testwritexmtostdout"
+    	};
         
         void execute(int argc, char *argv[]);
         
-        void doCompileCommand(string source, string output);
+        void doCompile(int argc, char *argv[]);
         
-        void doHelpCommand();
+        void doHelp(int argc, char *argv[]);
         
-        void doDebugCommand();
+        void doDebug(int argc, char *argv[]);
+        
+        void doReadprintxminfo(int argc, char *argv[]);
+        
+        void doTestwritexmtostdout(int argc, char *argv[]);
     };
     
 }

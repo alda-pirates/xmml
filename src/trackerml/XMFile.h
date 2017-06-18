@@ -8,8 +8,6 @@
 
 namespace trackerml {
     
-    using namespace std;
-    
     struct XMHeader {
         int8_t   id[17];                   // (char)  ID text: 'Extended Module: '
         int8_t   songname[20];             // (char)  Module name, padded with zeroes
@@ -132,14 +130,14 @@ compression. If the bit is set, then the other bits are interpreted as follows:
     class XMFile {
         protected:
         
-            XMHeader* header;
+            XMHeader header;
         
         
         public:
-        
+
             XMFile();
         
-		    void setSongName(string songname);
+		    void setSongName(std::string songname);
 		    
 		    void setSongLength(uint16_t length);
 		    
@@ -157,7 +155,7 @@ compression. If the bit is set, then the other bits are interpreted as follows:
 		    
 		    void setPatterns(uint8_t orders[256]);
 		    
-		    void write(ostream& os);
+		    void write(std::ostream & os);
     };
     
 }

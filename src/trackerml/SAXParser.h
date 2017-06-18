@@ -2,12 +2,10 @@
 #ifndef SAXPARSER_H
 #define SAXPARSER_H
 
-#include "trackerml/StringStream.h"
-#include "trackerml/ISAXHandler.h"
+#include "StringStream.h"
+#include "ISAXHandler.h"
 
 namespace trackerml {
-    
-    using namespace std;
 
     class SAXParser {
         
@@ -17,27 +15,27 @@ namespace trackerml {
             
             bool error = false;
             
-            string errorMsg;
+            std::string errorMsg;
             
             int errorLine = 0;
             
             int errorColumn = 0;
             
-            void setError(string msg);
+            void setError(std::string msg);
         
         public:
         
             ISAXHandler *handler;
             
-            void init(string str);
+            void init(std::string str);
             
-            bool parse(string fileName, ISAXHandler &hand);
+            bool parse(std::string fileName, ISAXHandler &hand);
             
             bool readElement();
             
-            pair<string, string> readAttribute();
+            std::pair<std::string, std::string> readAttribute();
             
-            vector<pair <string, string> > readAttributes();
+            std::vector<std::pair <std::string, std::string> > readAttributes();
             
             bool readComment();
             

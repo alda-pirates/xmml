@@ -1,23 +1,20 @@
 
-#include "trackerml/StringStream.h"
+#include "StringStream.h"
 
 #include <iostream>
 #include <vector>
 #include <tuple>
 
 namespace trackerml {
-    
-    using namespace std;
 
-    StringStream::StringStream() {
-        buffer = "";
+    StringStream::StringStream() : buffer("") { 
         start = 0;
         length = 0;
         lineCount = 0;
         columnCount = 0;
     }
         
-    StringStream::StringStream(string buff) {
+    StringStream::StringStream(std::string buff) {
         setBuffer(buff);
         lineCount = 0;
         columnCount = 0;
@@ -27,23 +24,23 @@ namespace trackerml {
         return length <= 0;
     }
     
-    string StringStream::getBuffer() {
+    std::string StringStream::getBuffer() {
         return buffer;
     }
     
-    int StringStream::getColumnCount() {
+    unsigned int StringStream::getColumnCount() {
         return columnCount;
     }
     
-    int StringStream::getLineCount() {
+    unsigned int StringStream::getLineCount() {
         return lineCount;
     }
     
-    int StringStream::getLength() {
+    unsigned int StringStream::getLength() {
         return length;
     }
     
-    int StringStream::getStart() {
+    unsigned int StringStream::getStart() {
         return start;
     }
     
@@ -54,7 +51,7 @@ namespace trackerml {
         return buffer[start];
     }
     
-    bool StringStream::peekCompare(string str) {
+    bool StringStream::peekCompare(std::string str) {
         if (empty() || length < str.length()) {
             return false;
         }
@@ -62,7 +59,7 @@ namespace trackerml {
         return buffer.substr(start, str.length()) == str;
     }   
     
-    bool StringStream::peekIn(vector<string> compareList) {
+    bool StringStream::peekIn(std::vector<std::string> compareList) {
         
         if (empty()) {
             return false;
@@ -77,7 +74,7 @@ namespace trackerml {
         return false;
     }
     
-    string StringStream::peekString(int size = 1) {
+    std::string StringStream::peekString(unsigned int size = 1) {
         if (empty() || length < size) {
             return "";
         }
@@ -85,8 +82,8 @@ namespace trackerml {
         return buffer.substr(start, size);
     }
     
-    string StringStream::read(int size = 1) {
-        string read = "";
+    std::string StringStream::read(unsigned int size = 1) {
+        std::string read = "";
         
         if (empty()) {
             return 0;
@@ -107,8 +104,8 @@ namespace trackerml {
         return read;
     }
     
-    string StringStream::readUntil(vector<string> compareList) {
-        string read = "";
+    std::string StringStream::readUntil(std::vector<std::string> compareList) {
+        std::string read = "";
         bool stop;
         
         if (empty()) {
@@ -150,10 +147,9 @@ namespace trackerml {
         return read;
     }
     
-    string StringStream::readWhile(vector<string> compareList) {
+    std::string StringStream::readWhile(std::vector<std::string> compareList) {
         bool stop = false;
-        string read = "";
-        char ch;
+        std::string read = "";
         
         while (!stop) {
         
@@ -187,9 +183,9 @@ namespace trackerml {
         return read;
     }
     
-    string StringStream::reverseReadWhile(vector<string> compareList) {
+    std::string StringStream::reverseReadWhile(std::vector<std::string> compareList) {
         bool stop = false;
-        string read = "";
+        std::string read = "";
         
         while (!stop) {
             
@@ -200,7 +196,10 @@ namespace trackerml {
                 
                 stop = true;
                 for (auto str: compareList) {
-                    if (length >= str.length() && buffer.substr(start+length-str.length(),str.length()) == str) {
+                    if (
+                		length >= str.length() && 
+                		buffer.substr(start+length-str.length(),str.length()) == str
+                    ) {
                         stop = false;
                         read = str + read;
                         length -= str.length();
@@ -214,17 +213,17 @@ namespace trackerml {
         return read;
     }
     
-    void StringStream::setBuffer(string buff) {
+    void StringStream::setBuffer(std::string buff) {
         buffer = buff;
         start = 0;
         length = buff.length();
     }
     
-    string StringStream::toString() {
+    std::string StringStream::toString() {
         return buffer.substr(start, length);
     }
     
-    string StringStream::trim(string str) {
+    std::string StringStream::trim(std::string str) {
         StringStream buff(str);
         
         buff.readWhile({" ", "\n", "\r", "\t"});

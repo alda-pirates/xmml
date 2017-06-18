@@ -1,7 +1,7 @@
 
-#include "trackerml/ISAXHandler.h"
-#include "trackerml/SAXParser.h"
-#include "trackerml/StringStream.h"
+#include "ISAXHandler.h"
+#include "SAXParser.h"
+#include "StringStream.h"
 
 #include <fstream>
 #include <iostream>
@@ -9,17 +9,15 @@
 #include <tuple>
 
 namespace trackerml {
-    
-    using namespace std;
 
-    void SAXParser::setError(string msg) {
+    void SAXParser::setError(std::string msg) {
         error = true;
         errorMsg = msg;
         errorLine = buffer.getLineCount();
         errorColumn = buffer.getColumnCount();
     }
     
-    void SAXParser::init(string str = "") {
+    void SAXParser::init(std::string str = "") {
             buffer = StringStream(str);
             error = false;
             errorMsg = "";
@@ -27,15 +25,13 @@ namespace trackerml {
             errorColumn = 0;
         }
     
-    bool SAXParser::parse(string fileName, ISAXHandler &hand) {
-                
-        int i, lineCount = 0, charCount = 0;
+    bool SAXParser::parse(std::string fileName, ISAXHandler &hand) {
         
-        string line, read = "", characters = "";
+        std::string line, read = "", characters = "";
         
         handler = &hand;
         
-        ifstream file(fileName);
+        std::ifstream file(fileName);
         
         while (getline(file, line)) {
             
@@ -86,9 +82,8 @@ namespace trackerml {
     }
     
     bool SAXParser::readElement() {
-        vector<pair <string, string> > attributes;
-        string characters, name;
-        int i = 0;
+        std::vector<std::pair <std::string, std::string> > attributes;
+        std::string characters, name;
         
         if (! buffer.peekCompare("<")) {
             setError("expected openning bracket");
@@ -196,10 +191,10 @@ namespace trackerml {
         return true;
     }
 
-    pair<string, string> SAXParser::readAttribute() {
-        pair<string, string> attr = make_pair("", "");
+    std::pair<std::string, std::string> SAXParser::readAttribute() {
+        std::pair<std::string, std::string> attr = std::make_pair("", "");
         
-        get<0>(attr) =  buffer.readUntil({" ", "\n", "\r", "\t", "=", ">", "/>"});
+        std::get<0>(attr) =  buffer.readUntil({" ", "\n", "\r", "\t", "=", ">", "/>"});
         
         buffer.readWhile({" ", "\n", "\r", "\t"});
         
@@ -214,7 +209,7 @@ namespace trackerml {
                 case '\'':
             
                     buffer.read(1);
-                    get<1>(attr) = buffer.readUntil({"'"});
+                    std::get<1>(attr) = buffer.readUntil({"'"});
                     
                     if (!buffer.peekCompare("'")) {
                         setError("expected end quote attribute");
@@ -227,7 +222,7 @@ namespace trackerml {
                 case '"':
             
                     buffer.read(1);
-                    get<1>(attr) = buffer.readUntil({"\""});
+                    std::get<1>(attr) = buffer.readUntil({"\""});
                     
                     if (!buffer.peekCompare("\"")) {
                         setError("expected end quote attribute");
@@ -238,7 +233,7 @@ namespace trackerml {
                     break;
                     
                 default:
-                    get<1>(attr) = buffer.readUntil({" ", "\n", "\r", "\t", ">", "/>"});
+                    std::get<1>(attr) = buffer.readUntil({" ", "\n", "\r", "\t", ">", "/>"});
                     
             }
         }
@@ -246,16 +241,16 @@ namespace trackerml {
         return attr;
     }
     
-    vector<pair <string, string> > SAXParser::readAttributes() {
-        vector<pair <string, string> > attrs;
-        pair<string, string> attr;
+    std::vector<std::pair <std::string, std::string> > SAXParser::readAttributes() {
+        std::vector<std::pair <std::string, std::string> > attrs;
+        std::pair<std::string, std::string> attr;
         
         attr = readAttribute();
         if (error) {
             return attrs;
         }
         
-        while ( ! get<0>(attr).empty() ) {
+        while ( ! std::get<0>(attr).empty() ) {
             attrs.push_back(attr);
             attr = readAttribute();
             if (error) {
@@ -270,7 +265,7 @@ namespace trackerml {
         
             
     bool SAXParser::readComment() {
-        string lastRead = "";
+        std::string lastRead = "";
         
         buffer.read(4);
         
@@ -293,7 +288,7 @@ namespace trackerml {
     }
             
     bool SAXParser::readProcessingInstruction() {
-        string lastRead = "";
+        std::string lastRead = "";
         
         buffer.read(2);
         

@@ -1,42 +1,40 @@
 
-#include "trackerml/TestSAXHandler.h"
+#include "TestSAXHandler.h"
 
 #include <iostream>
 #include <tuple>
 #include <vector>
 
 namespace trackerml {
-    
-    using namespace std;
             
-    void TestSAXHandler::characters(string text) {
-        cout << text << endl;
+    void TestSAXHandler::characters(std::string text) {
+        std::cout << text << std::endl;
     }
     
-    void TestSAXHandler::comment(string text) {}
+    void TestSAXHandler::comment(std::string text) {}
     
     void TestSAXHandler::endDocument() {
     }
     
-    void TestSAXHandler::endElement(string name) {
-        cout << "</" + name + ">" << endl;
+    void TestSAXHandler::endElement(std::string name) {
+        std::cout << "</" + name + ">" << std::endl;
     }
     
-    void TestSAXHandler::error(string msg, int lineCount, int charCount) {
-        cerr << lineCount << ":" << charCount << ": error:" + msg << endl; 
+    void TestSAXHandler::error(std::string msg, int lineCount, int charCount) {
+        std::cerr << lineCount << ":" << charCount << ": error:" + msg << std::endl; 
     }
     
-    void TestSAXHandler::processingInstruction(string text) {}
+    void TestSAXHandler::processingInstruction(std::string text) {}
     
     void TestSAXHandler::startDocument() {
     }
     
-    void TestSAXHandler::startElement(string name, vector<pair <string, string> > attributes) {
-        cout << "<" + name + "";
+    void TestSAXHandler::startElement(std::string name, std::vector<std::pair <std::string, std::string> > attributes) {
+        std::cout << "<" + name + "";
         for (auto attr: attributes) {
-            cout << " " + (get<0>(attr)) + "=\"" + (get<1>(attr)) + "\"";
+            std::cout << " " + (std::get<0>(attr)) + "=\"" + (std::get<1>(attr)) + "\"";
         }
-        cout << ">" << endl;
+        std::cout << ">" << std::endl;
     }
     
 }

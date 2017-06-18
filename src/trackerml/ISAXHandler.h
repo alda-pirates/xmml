@@ -8,19 +8,17 @@
 
 namespace trackerml {
     
-    using namespace std;
-    
     class ISAXHandler {
         public:
         
-        virtual void characters(string text)=0;
-        virtual void comment(string text)=0;
+        virtual void characters(std::string text)=0;
+        virtual void comment(std::string text)=0;
         virtual void endDocument()=0;
-        virtual void endElement(string name)=0;
-        virtual void error(string msg, int lineCount, int charCount)=0;
-        virtual void processingInstruction(string text)=0;
+        virtual void endElement(std::string name)=0;
+        virtual void error(std::string msg, int lineCount, int charCount)=0;
+        virtual void processingInstruction(std::string text)=0;
         virtual void startDocument()=0;
-        virtual void startElement(string name, vector<pair <string, string> > attributes)=0;
+        virtual void startElement(std::string name, std::vector<std::pair <std::string, std::string> > attributes)=0;
     };
     
 }

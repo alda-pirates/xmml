@@ -2,65 +2,63 @@
 #ifndef STRINGSTREAM_H
 #define STRINGSTREAM_H
 
-#include "trackerml/ISAXHandler.h"
+#include "ISAXHandler.h"
 
 #include <string>
 #include <tuple>
 #include <vector>
 
 namespace trackerml {
-    
-    using namespace std;
 
     class StringStream {
         
         protected:
         
-            string buffer; // Could take an istream instead
-            int start;
-            int length;
-            int lineCount;
-            int columnCount;
+            std::string buffer; // Could take an istream instead
+            unsigned int start;
+            unsigned int length;
+            unsigned int lineCount;
+            unsigned int columnCount;
         
         public:
         
             StringStream();
         
-            StringStream(string buff);
+            explicit StringStream(std::string buff);
             
             bool empty();
             
-            string getBuffer();
+            std::string getBuffer();
             
-            int getColumnCount();
+            unsigned int getColumnCount();
             
-            int getLineCount();
+            unsigned int getLineCount();
             
-            int getLength();
+            unsigned int getLength();
             
-            int getStart();
+            unsigned int getStart();
             
             char peek();
             
-            bool peekCompare(string str);
+            bool peekCompare(std::string str);
             
-            bool peekIn(vector<string> compareList);
+            bool peekIn(std::vector<std::string> compareList);
             
-            string peekString(int size);
+            std::string peekString(unsigned int size);
             
-            string read(int size);
+            std::string read(unsigned int size);
             
-            string readUntil(vector<string> compareList);
+            std::string readUntil(std::vector<std::string> compareList);
             
-            string readWhile(vector<string> compareList);
+            std::string readWhile(std::vector<std::string> compareList);
             
-            string reverseReadWhile(vector<string> compareList);
+            std::string reverseReadWhile(std::vector<std::string> compareList);
             
-            void setBuffer(string buff);
+            void setBuffer(std::string buff);
             
-            string toString();
+            std::string toString();
             
-            static string trim(string str);
+            static std::string trim(std::string str);
     
     };
     

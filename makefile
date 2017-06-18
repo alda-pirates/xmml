@@ -1,17 +1,18 @@
 CC=g++
-CFLAGS=-I./src -std=c++11
-SOURCES = $(wildcard src/*.cpp src/trackerml/*.cpp)
-#OBJECTS=$(SOURCES:.cpp=.o)
+CFLAGS=-I./src -std=c++11 -Wall
+SOURCES=$(wildcard src/*.cpp src/trackerml/*.cpp)
+OBJECTS=$(patsubst src/%, obj/%, $(SOURCES:.cpp=.o))
 #DEPS = ./src/trackerml/SAXHandler.h
-EXECUTABLE=tracker-ml
+TARGET=trackerml
 
-all: 
-	$(CC) $(CFLAGS) $(SOURCES) -o $(EXECUTABLE)
+all: $(TARGET)
 
-#all: $(SOURCES) $(EXECUTABLE)
+$(TARGET): $(OBJECTS)
+	$(CC) $(CFLAGS) $^ -o $@
 
-#$(EXECUTABLE): $(OBJECTS) 
-#	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+obj/%.o: src/%.cpp
+	$(CC) -c $(CFLAGS) $< -o $@
 
-#.cpp.o:
-#	$(CC) $(CFLAGS) $< -o $@
+clean:
+	rm -rf obj
+	mkdir -p obj/trackerml
