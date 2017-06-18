@@ -10,6 +10,8 @@
 #include <iostream>
 
 namespace trackerml {
+	
+	using namespace std;
     
     void CommandController::doCompile(int argc, char *argv[]) {
     	/*
@@ -31,18 +33,18 @@ namespace trackerml {
     }
     
     void CommandController::doHelp(int argc, char *argv[]) {
-        std::cout 
-            << "Usage: tracker-ml {command}" << std::endl
-            << "Command:" << std::endl;
+        cout 
+            << "Usage: tracker-ml {command}" << endl
+            << "Command:" << endl;
             
         for (auto command : commands) {
-        	std::cout << '\t' << command << std::endl;
+        	cout << '\t' << command << endl;
         }
         
         /*
-            << "\t-h,--help\t\tDisplay this information" << std::endl
-            << "\t-o <file>\t\tPlace the output into <file>" << std::endl
-            << "If no -o option is given, the program will place the output into a file named out.xm" << std::endl
+            << "\t-h,--help\t\tDisplay this information" << endl
+            << "\t-o <file>\t\tPlace the output into <file>" << endl
+            << "If no -o option is given, the program will place the output into a file named out.xm" << endl
             ;
             */
     }
@@ -50,21 +52,21 @@ namespace trackerml {
     void CommandController::doReadprintxminfo(int argc, char *argv[]) {
 		struct trackerml::XMHeader header;
 		        
-		std::ifstream file(argv[2], std::ios::binary | std::ios::in);
+		ifstream file(argv[2], ios::binary | ios::in);
 		
 		file.read((char*)&header, sizeof(header));
 		
 		file.close();
 		
-		std::cout 
-			<< "Song name: " << header.songname << std::endl
-			<< "Length: " << header.songlength << std::endl
-			<< "Restart: " << header.restart << std::endl
-			<< "Channels count: " << header.numchannels << std::endl
-			<< "Patterns count: " << header.numpatterns << std::endl
-			<< "Instruments count: " << header.numinstruments << std::endl
-			<< "Tempo: " << header.tempo << std::endl
-			<< "BPM: " << header.bpm << std::endl;
+		cout 
+			<< "Song name: " << header.songname << endl
+			<< "Length: " << header.songlength << endl
+			<< "Restart: " << header.restart << endl
+			<< "Channels count: " << header.numchannels << endl
+			<< "Patterns count: " << header.numpatterns << endl
+			<< "Instruments count: " << header.numinstruments << endl
+			<< "Tempo: " << header.tempo << endl
+			<< "BPM: " << header.bpm << endl;
     }
     
     void CommandController::doTestwritexmtostdout(int argc, char *argv[]) {
@@ -78,7 +80,7 @@ namespace trackerml {
 		xm.setTempo(3);
 		xm.setBpm(250);
 		//xm.setPatterns();
-		xm.write(std::cout);
+		xm.write(cout);
     }
         
     void CommandController::execute(int argc, char *argv[]) {
@@ -87,7 +89,7 @@ namespace trackerml {
 			return;
 		}
 		
-		std::string command = argv[1];
+		string command = argv[1];
 		
 		if (command == "compile") {
 			doCompile(argc, argv);
@@ -118,7 +120,7 @@ namespace trackerml {
 		/*
         int i, command = DEBUG;
         
-        std::string arg, source, output = "out.xm";
+        string arg, source, output = "out.xm";
         
         for (i = 1; i < argc; ++i) {
             

@@ -5,26 +5,28 @@
 #include "ISAXHandler.h"
 
 namespace trackerml {
+	
+	using namespace std;
     
     class TestSAXHandler: public ISAXHandler {
         
         public:
             
-            void characters(std::string text);
+            void characters(string text);
             
-            void comment(std::string text);
+            void comment(string text);
             
             void endDocument();
             
-            void endElement(std::string name);
+            void endElement(string name);
             
-            void error(std::string msg, int lineCount, int charCount);
+            void error(string msg, int lineCount, int charCount);
             
-            void processingInstruction(std::string text);
+            void processingInstruction(string text);
             
             void startDocument();
             
-            void startElement(std::string name, std::vector<std::pair <std::string, std::string> > attributes);
+            void startElement(string name, vector<pair <string, string> > attributes);
             
     };
     

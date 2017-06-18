@@ -6,6 +6,8 @@
 #include "ISAXHandler.h"
 
 namespace trackerml {
+	
+	using namespace std;
 
     class SAXParser {
         
@@ -15,27 +17,27 @@ namespace trackerml {
             
             bool error = false;
             
-            std::string errorMsg;
+            string errorMsg;
             
             int errorLine = 0;
             
             int errorColumn = 0;
             
-            void setError(std::string msg);
+            void setError(string msg);
         
         public:
         
             ISAXHandler *handler;
             
-            void init(std::string str);
+            void init(string str);
             
-            bool parse(std::string fileName, ISAXHandler &hand);
+            bool parse(string fileName, ISAXHandler &hand);
             
             bool readElement();
             
-            std::pair<std::string, std::string> readAttribute();
+            pair<string, string> readAttribute();
             
-            std::vector<std::pair <std::string, std::string> > readAttributes();
+            vector<pair <string, string> > readAttributes();
             
             bool readComment();
             

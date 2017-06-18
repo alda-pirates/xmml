@@ -7,6 +7,8 @@
 #include "XMFile.h"
 
 namespace trackerml {
+	
+	using namespace std;
         
     XMFile::XMFile() {
         strncpy((char *) header.id, "Extended Module: ", 17);
@@ -20,7 +22,7 @@ namespace trackerml {
         header.flags = 1; // Linear freq. table
     }
     
-    void XMFile::setSongName(std::string songname) {
+    void XMFile::setSongName(string songname) {
     	strncpy((char *) header.songname, songname.c_str(), sizeof(header.songname));
     }
     
@@ -56,7 +58,7 @@ namespace trackerml {
     	strncpy((char *) header.orders, (char *) orders, 256);
     }
     
-    void XMFile::write(std::ostream & os) {
+    void XMFile::write(ostream & os) {
     	// Write header
     	os.write((char *)   header.id, sizeof(header.id));
     	os.write((char *)   header.songname, sizeof(header.songname));

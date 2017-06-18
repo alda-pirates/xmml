@@ -9,12 +9,14 @@
 #include <vector>
 
 namespace trackerml {
+	
+	using namespace std;
 
     class StringStream {
         
         protected:
         
-            std::string buffer; // Could take an istream instead
+            string buffer; // Could take an istream instead
             unsigned int start;
             unsigned int length;
             unsigned int lineCount;
@@ -24,11 +26,11 @@ namespace trackerml {
         
             StringStream();
         
-            explicit StringStream(std::string buff);
+            explicit StringStream(string buff);
             
             bool empty();
             
-            std::string getBuffer();
+            string getBuffer();
             
             unsigned int getColumnCount();
             
@@ -40,25 +42,25 @@ namespace trackerml {
             
             char peek();
             
-            bool peekCompare(std::string str);
+            bool peekCompare(string str);
             
-            bool peekIn(std::vector<std::string> compareList);
+            bool peekIn(vector<string> compareList);
             
-            std::string peekString(unsigned int size);
+            string peekString(unsigned int size);
             
-            std::string read(unsigned int size);
+            string read(unsigned int size);
             
-            std::string readUntil(std::vector<std::string> compareList);
+            string readUntil(vector<string> compareList);
             
-            std::string readWhile(std::vector<std::string> compareList);
+            string readWhile(vector<string> compareList);
             
-            std::string reverseReadWhile(std::vector<std::string> compareList);
+            string reverseReadWhile(vector<string> compareList);
             
-            void setBuffer(std::string buff);
+            void setBuffer(string buff);
             
-            std::string toString();
+            string toString();
             
-            static std::string trim(std::string str);
+            static string trim(string str);
     
     };
     

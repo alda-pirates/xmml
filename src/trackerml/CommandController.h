@@ -6,12 +6,14 @@
 #include <string>
 
 namespace trackerml {
+	
+	using namespace std;
 
     class CommandController {
         
         public:
         
-    	std::vector<std::string> commands = {
+    	vector<string> commands = {
     		"compile", 
     		"help",
     		"debug",
