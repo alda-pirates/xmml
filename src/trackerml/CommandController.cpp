@@ -34,17 +34,17 @@ namespace trackerml {
     
     void CommandController::doHelp(int argc, char *argv[]) {
         cout 
-            << "Usage: tracker-ml {command}" << endl
-            << "Command:" << endl;
+            << "Usage: tracker-ml {command}" << '\n'
+            << "Command:" << '\n';
             
         for (auto command : commands) {
-        	cout << '\t' << command << endl;
+        	cout << '\t' << command << '\n';
         }
         
         /*
-            << "\t-h,--help\t\tDisplay this information" << endl
-            << "\t-o <file>\t\tPlace the output into <file>" << endl
-            << "If no -o option is given, the program will place the output into a file named out.xm" << endl
+            << "\t-h,--help\t\tDisplay this information" << '\n'
+            << "\t-o <file>\t\tPlace the output into <file>" << '\n'
+            << "If no -o option is given, the program will place the output into a file named out.xm" << '\n'
             ;
             */
     }
@@ -59,14 +59,14 @@ namespace trackerml {
 		file.close();
 		
 		cout 
-			<< "Song name: " << header.songname << endl
-			<< "Length: " << header.songlength << endl
-			<< "Restart: " << header.restart << endl
-			<< "Channels count: " << header.numchannels << endl
-			<< "Patterns count: " << header.numpatterns << endl
-			<< "Instruments count: " << header.numinstruments << endl
-			<< "Tempo: " << header.tempo << endl
-			<< "BPM: " << header.bpm << endl;
+			<< "Song name: " << header.songname << '\n'
+			<< "Length: " << header.songlength << '\n'
+			<< "Restart: " << header.restart << '\n'
+			<< "Channels count: " << header.numchannels << '\n'
+			<< "Patterns count: " << header.numpatterns << '\n'
+			<< "Instruments count: " << header.numinstruments << '\n'
+			<< "Tempo: " << header.tempo << '\n'
+			<< "BPM: " << header.bpm << '\n';
     }
     
     void CommandController::doTestwritexmtostdout(int argc, char *argv[]) {

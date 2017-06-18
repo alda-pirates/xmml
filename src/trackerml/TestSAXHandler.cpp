@@ -10,7 +10,7 @@ namespace trackerml {
 	using namespace std;
             
     void TestSAXHandler::characters(string text) {
-        cout << text << endl;
+        cout << text << '\n';
     }
     
     void TestSAXHandler::comment(string text) {}
@@ -19,11 +19,11 @@ namespace trackerml {
     }
     
     void TestSAXHandler::endElement(string name) {
-        cout << "</" + name + ">" << endl;
+        cout << "</" + name + ">\n";
     }
     
     void TestSAXHandler::error(string msg, int lineCount, int charCount) {
-        cerr << lineCount << ":" << charCount << ": error:" + msg << endl; 
+        cerr << lineCount << ":" << charCount << ": error:" + msg << '\n'; 
     }
     
     void TestSAXHandler::processingInstruction(string text) {}
@@ -36,7 +36,7 @@ namespace trackerml {
         for (auto attr: attributes) {
             cout << " " + (get<0>(attr)) + "=\"" + (get<1>(attr)) + "\"";
         }
-        cout << ">" << endl;
+        cout << ">\n";
     }
     
 }
