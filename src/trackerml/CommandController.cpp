@@ -50,28 +50,39 @@ namespace trackerml {
 
     void CommandController::doTestread(int argc, char *argv[]) {
         
-        trackerml::XMSample sample;
-        /*
-        trackerml::XMFile xmFile;
+        trackerml::XMFile song;
         
         ifstream is(argv[2], ios::binary | ios::in);
         
-        xmFile.read(is);
+        song.read(is);
 
-        cout << "Song name: " << xmFile.getSongName() << '\n'
-             << "Length: " << xmFile.getSongLength() << '\n'
-             << "Restart: " << xmFile.getRestartPosition() << '\n'
-             << "Channels count: " << xmFile.getChannelsCount() << '\n'
-             << "Frequency table: " << ((int)xmFile.getFrequencyTableType() ? "linear" : "amiga") << "\n"
-             << "BPM: " << xmFile.getBpm() << '\n'
-             << "Tempo: " << xmFile.getTempo() << "\n\n";
+        cout << "Song name: " << song.getSongName() << '\n'
+             << "Length: " << song.getSongLength() << '\n'
+             << "Restart: " << song.getRestartPosition() << '\n'
+             << "Channels count: " << song.getChannelsCount() << '\n'
+             << "Frequency table: " << ((int)song.getFrequencyTableType() ? "linear" : "amiga") << "\n"
+             << "BPM: " << song.getBpm() << '\n'
+             << "Tempo: " << song.getTempo() << "\n\n";
              
         cout << "Patterns:\n";
-        for (auto n : xmFile.getPatternsTable()) {
+        for (auto n : song.getPatternsTable()) {
           cout << "  " << to_string(n) << '\n';
         }
-        */
-        //sample.read(is);
+        
+        trackerml::XMSample sample;
+        is.seekg(0x460);
+        sample.read(is);
+        
+        cout 
+             << "getLoopStart: " << (int)sample.getLoopStart() << '\n'
+             << "getLoopLength: " << (int)sample.getLoopLength() << '\n'
+             << "getVolume: " << (int)sample.getVolume() << '\n'
+             << "getFineTune: " << (int)sample.getFineTune() << '\n'
+             << "getPanning: " << (int)sample.getPanning() << '\n'
+             << "getRelativeNote: " << (int)sample.getRelativeNote() << '\n'
+             << "getName: " << sample.getName() << '\n'
+             << "size: " << (int)sample.getData().size() << '\n';
+        
     }
     
     void CommandController::doTestwrite(int argc, char *argv[]) {
