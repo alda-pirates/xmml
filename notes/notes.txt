@@ -1,0 +1,21 @@
+Header
+
+0x50..0x14f         Patterns table
+
+0x150 Patterns, pattern header size: 9 bytes 
+
+c
+c#
+d
+d#
+e
+f
+f#
+g
+g#
+a
+a#
+b
+
+
+131

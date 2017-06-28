@@ -1,0 +1,17 @@
+0x390 : type (0)
+0x391 : sample count (1)
+0x393 : start extended header, size (40 == 0x28)
+0x397 : samplenotes[96]
+0x3f7 : volume envelope points[48]
+0x427 : panning envelope points[48]
+0x457 : volume envelope points count 
+0x458 : panning envelope points count 
+0x459 : volume sustain
+0x45a : volume loop start
+0x45b : volume loop end   
+0x45c : panning sustain
+0x45d : panning loop start
+0x45e : panning loop end   
+0x45f : volume type   
+0x460 : panning type   
+47d
