@@ -1,0 +1,23 @@
+main.o: src/main.cpp src/trackerml/CommandController.h
+StringStream.o: src/trackerml/StringStream.cpp \
+ src/trackerml/StringStream.h
+XMFile.o: src/trackerml/XMFile.cpp src/trackerml/XMFile.h \
+ src/trackerml/XMInstrument.h src/trackerml/XMSample.h \
+ src/trackerml/XMPattern.h src/trackerml/stream.h
+XMInstrument.o: src/trackerml/XMInstrument.cpp \
+ src/trackerml/XMInstrument.h src/trackerml/XMSample.h \
+ src/trackerml/stream.h
+stream.o: src/trackerml/stream.cpp src/trackerml/stream.h
+SAXParser.o: src/trackerml/SAXParser.cpp src/trackerml/SAXParser.h \
+ src/trackerml/SAXHandler.h src/trackerml/StringStream.h
+TestSAXHandler.o: src/trackerml/TestSAXHandler.cpp \
+ src/trackerml/TestSAXHandler.h src/trackerml/SAXHandler.h
+CommandController.o: src/trackerml/CommandController.cpp \
+ src/trackerml/CommandController.h src/trackerml/SAXParser.h \
+ src/trackerml/SAXHandler.h src/trackerml/StringStream.h \
+ src/trackerml/TestSAXHandler.h src/trackerml/XMFile.h \
+ src/trackerml/XMInstrument.h src/trackerml/XMSample.h \
+ src/trackerml/XMPattern.h
+XMSample.o: src/trackerml/XMSample.cpp src/trackerml/XMSample.h \
+ src/trackerml/stream.h
+XMPattern.o: src/trackerml/XMPattern.cpp src/trackerml/XMPattern.h

@@ -2,7 +2,6 @@
 #ifndef XMSAMPLE_H
 #define XMSAMPLE_H
 
-#include <cstdint>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -10,17 +9,10 @@
 namespace trackerml {
 
     using namespace std;
-    
-    enum SampleLoopType : int {
-        noLoop,
-        forward,
-        pingPong
-    };
-    
-    enum class SampleRate : int  {
-        rate8hz,
-        rate16hz
-    };
+
+    enum SampleLoopType { noLoop, forward, pingPong };
+
+    enum class SampleRate { rate8hz, rate16hz };
 
     class XMSample {
       private:
@@ -33,11 +25,12 @@ namespace trackerml {
         int panning;
         int relativeNote;
         string name;
-        
-        vector<int> data; 
-        
+
+        vector<int> data;
+
         void writeHeader(ostream &os);
         void readHeader(istream &is);
+
       public:
         XMSample();
         int getLoopStart();

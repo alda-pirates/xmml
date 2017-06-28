@@ -5,9 +5,7 @@
 #include "XMFile.h"
 #include "XMSample.h"
 //#include "StringStream.h"
-
 #include <algorithm>
-#include <cstring>
 #include <fstream>
 #include <iostream>
 
@@ -49,35 +47,32 @@ namespace trackerml {
     }
 
     void CommandController::doTestread(int argc, char *argv[]) {
-        
-        trackerml::XMSample sample;
-        /*
-        trackerml::XMFile xmFile;
-        
-        ifstream is(argv[2], ios::binary | ios::in);
-        
-        xmFile.read(is);
 
-        cout << "Song name: " << xmFile.getSongName() << '\n'
-             << "Length: " << xmFile.getSongLength() << '\n'
-             << "Restart: " << xmFile.getRestartPosition() << '\n'
-             << "Channels count: " << xmFile.getChannelsCount() << '\n'
-             << "Frequency table: " << ((int)xmFile.getFrequencyTableType() ? "linear" : "amiga") << "\n"
-             << "BPM: " << xmFile.getBpm() << '\n'
-             << "Tempo: " << xmFile.getTempo() << "\n\n";
-             
+        trackerml::XMFile song;
+
+        ifstream is(argv[2], ios::binary | ios::in);
+
+        song.read(is);
+
+        cout << "Song name: " << song.getSongName() << '\n'
+             << "Length: " << song.getSongLength() << '\n'
+             << "Restart: " << song.getRestartPosition() << '\n'
+             << "Channels count: " << song.getChannelsCount() << '\n'
+             << "Frequency table: "
+             << ((int)song.getFrequencyTableType() ? "linear" : "amiga") << "\n"
+             << "BPM: " << song.getBpm() << '\n'
+             << "Tempo: " << song.getTempo() << "\n\n";
+
         cout << "Patterns:\n";
-        for (auto n : xmFile.getPatternsTable()) {
-          cout << "  " << to_string(n) << '\n';
+        for (auto n : song.getPatternsTable()) {
+            cout << "  " << to_string(n) << '\n';
         }
-        */
-        //sample.read(is);
     }
-    
+
     void CommandController::doTestwrite(int argc, char *argv[]) {
         trackerml::XMInstrument instrumentKick;
         instrumentKick.setName("Kick");
-        
+
         trackerml::XMInstrument instrumentSnare;
         instrumentSnare.setName("Snare");
 
