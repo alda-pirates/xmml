@@ -1,9 +1,9 @@
 CC=g++
-CFLAGS=-I./src -std=c++11 -Wall
+CFLAGS=-g -I./src -std=c++11 -Wall
 SOURCES=$(wildcard src/*.cpp src/trackerml/*.cpp)
 OBJECTS=$(patsubst src/%, obj/%, $(SOURCES:.cpp=.o))
 HEADERS=$(SOURCES:.cpp=.h)
-#DEPS = ./src/trackerml/SAXHandler.h
+DEPS := $($(SOURCES:.cpp=.o):.o=.d)
 TARGET=trackerml
 
 all: $(TARGET)
@@ -25,3 +25,10 @@ format:
 	for SRC in $(SOURCES);do if [ -f $$SRC ]; then clang-format -style=file -i "$$SRC"; fi; done
 	for SRC in $(HEADERS);do if [ -f $$SRC ]; then clang-format -style=file -i "$$SRC"; fi; done
 	
+depend: .depend
+
+.depend: $(SOURCES)
+	rm -f ./.depend
+	$(CC) $(CFLAGS) -MM $^>>./.depend;
+
+include .depend

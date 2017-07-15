@@ -35,12 +35,14 @@ stored as 5 bytes:
 A simle packing scheme is also adopted, so that the patterns do not become TOO
 large: Since the MSB in the note value is never used, it is used for the
 compression.If the bit is set, then the other bits are interpreted as follows:
+	  
+    bit 0 set (00000001): Note byte follows
+        1 set (00000010): Instrument byte follows
+        2 set (00000100): Volume column byte follows
+        3 set (00001000): Effect byte follows
+        4 set (00010000): Effect data byte follows
 
-	  bit 0 set: Note byte ollows
-		  1 set: Instrument byte follows
-		  2 set: Volume column byte follows
-		  3 set: Effect byte follows
-		  4 set: Effect data byte follows
+    For example, if the note and the volume are set, but not the instrument neither the effects then first byte will be 0x80 + 0x01 + 0x04 = 0x85, where 0x80 indicate the packing scheme is used, 0x01 indicate the note is present and the 0x04 indicate the volume is present. Then the next byte will be the value for the note and the second one will be the volume.
 
 OFFSET              Count TYPE   Description
 0000h                   1 dword  Length of pattern block/header ??

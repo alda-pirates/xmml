@@ -1,8 +1,6 @@
 
 #ifndef XMSAMPLE_H
 #define XMSAMPLE_H
-
-#include <cstdint>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -10,57 +8,47 @@
 namespace trackerml {
 
     using namespace std;
-    
-    enum SampleLoopType : uint8_t {
-        noLoop,
-        forward,
-        pingPong
-    };
-    
-    enum class SampleRate : uint8_t  {
-        rate8hz,
-        rate16hz
-    };
+
+    enum SampleLoopType { noLoop, forward, pingPong };
+
+    enum class SampleRate { rate8hz, rate16hz };
 
     class XMSample {
       private:
-        uint32_t loopStart;
-        uint32_t loopLength;
-        uint8_t volume;
-        int8_t fineTune;
+        int loopStart;
+        int loopLength;
+        int volume;
+        int fineTune;
         SampleLoopType loopType;
         SampleRate sampleRate;
-        uint8_t panning;
-        int8_t relativeNote;
+        int panning;
+        int relativeNote;
         string name;
-        
-        vector<uint8_t> data; 
-        
-        void writeHeader(ostream &os);
-        void readHeader(istream &is);
+
+        vector<int> data;
 
       public:
         XMSample();
-        uint32_t getLoopStart();
-        uint32_t getLoopLength();
-        uint8_t getVolume();
-        int8_t getFineTune();
+        int getLoopStart();
+        int getLoopLength();
+        int getVolume();
+        int getFineTune();
         SampleLoopType getLoopType();
         SampleRate getSampleRate();
-        uint8_t getPanning();
-        int8_t getRelativeNote();
+        int getPanning();
+        int getRelativeNote();
         string getName();
-        vector<uint8_t> getData();
-        void setLoopStart(uint32_t start);
-        void setLoopLength(uint32_t length);
-        void setVolume(uint8_t volume);
-        void setFineTune(int8_t finetune);
+        vector<int> getData();
+        void setLoopStart(int start);
+        void setLoopLength(int length);
+        void setVolume(int volume);
+        void setFineTune(int finetune);
         void setLoopType(SampleLoopType type);
         void setSampleRate(SampleRate rate);
-        void setPanning(uint8_t panning);
-        void setRelativeNote(int8_t relativenote);
+        void setPanning(int panning);
+        void setRelativeNote(int relativenote);
         void setName(string name);
-        void setData(vector<uint8_t> data);
+        void setData(vector<int> data);
         void write(ostream &os);
         void read(istream &is);
     };
