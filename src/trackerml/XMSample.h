@@ -28,9 +28,6 @@ namespace trackerml {
 
         vector<int> data;
 
-        void writeHeader(ostream &os);
-        void readHeader(istream &is);
-
       public:
         XMSample();
         int getLoopStart();

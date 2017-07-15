@@ -4,6 +4,8 @@ StringStream.o: src/trackerml/StringStream.cpp \
 XMFile.o: src/trackerml/XMFile.cpp src/trackerml/XMFile.h \
  src/trackerml/XMInstrument.h src/trackerml/XMSample.h \
  src/trackerml/XMPattern.h src/trackerml/stream.h
+Instrument.o: src/trackerml/Instrument.cpp src/trackerml/Instrument.h \
+ src/trackerml/Sample.h
 XMInstrument.o: src/trackerml/XMInstrument.cpp \
  src/trackerml/XMInstrument.h src/trackerml/XMSample.h \
  src/trackerml/stream.h
@@ -20,4 +22,8 @@ CommandController.o: src/trackerml/CommandController.cpp \
  src/trackerml/XMPattern.h
 XMSample.o: src/trackerml/XMSample.cpp src/trackerml/XMSample.h \
  src/trackerml/stream.h
-XMPattern.o: src/trackerml/XMPattern.cpp src/trackerml/XMPattern.h
+Pattern.o: src/trackerml/Pattern.cpp src/trackerml/Pattern.h
+Song.o: src/trackerml/Song.cpp src/trackerml/Instrument.h \
+ src/trackerml/Sample.h src/trackerml/Pattern.h src/trackerml/Song.h
+XMPattern.o: src/trackerml/XMPattern.cpp src/trackerml/XMPattern.h \
+ src/trackerml/stream.h

@@ -2,7 +2,6 @@
 #include "trackerml/CommandController.h"
 
 #include <fstream>
-//#include <iostream>
 
 using namespace std;
 

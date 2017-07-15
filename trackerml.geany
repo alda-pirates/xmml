@@ -28,11 +28,18 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=3
-FILE_NAME_0=1759;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FCommandController.cpp;0;4
-FILE_NAME_1=1438;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FXMFile.h;0;4
-FILE_NAME_2=71;None;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2F.clang-format;0;4
-FILE_NAME_3=2804;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FXMFile.cpp;0;4
+current_page=10
+FILE_NAME_0=2403;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FCommandController.cpp;0;4
+FILE_NAME_1=253;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FXMFile.cpp;0;4
+FILE_NAME_2=3070;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FXMPattern.cpp;0;4
+FILE_NAME_3=279;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FXMFile.h;0;4
+FILE_NAME_4=75;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FSong.h;0;4
+FILE_NAME_5=94;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FSample.h;0;4
+FILE_NAME_6=94;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FSong.cpp;0;4
+FILE_NAME_7=295;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FPattern.cpp;0;4
+FILE_NAME_8=313;C++;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsrc%2Ftrackerml%2FInstrument.cpp;0;4
+FILE_NAME_9=63122;None;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FTrackerMl%2Fsongs%2FMatrox.txt;0;4
+FILE_NAME_10=175;HTML;0;EUTF-8;0;1;1;%2Fhome%2Fnicolas%2FProjets%2FMusique%2Findex.html;0;4
 
 [VTE]
 last_dir=/home/nicolas

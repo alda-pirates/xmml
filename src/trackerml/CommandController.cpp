@@ -7,6 +7,7 @@
 //#include "StringStream.h"
 #include <algorithm>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 
 namespace trackerml {
@@ -53,20 +54,47 @@ namespace trackerml {
         ifstream is(argv[2], ios::binary | ios::in);
 
         song.read(is);
+        
+        cout << "<audioml>\n" ;
 
-        cout << "Song name: " << song.getSongName() << '\n'
-             << "Length: " << song.getSongLength() << '\n'
-             << "Restart: " << song.getRestartPosition() << '\n'
-             << "Channels count: " << song.getChannelsCount() << '\n'
-             << "Frequency table: "
-             << ((int)song.getFrequencyTableType() ? "linear" : "amiga") << "\n"
-             << "BPM: " << song.getBpm() << '\n'
-             << "Tempo: " << song.getTempo() << "\n\n";
+        cout << "\t<title>" << song.getSongName() << "</title>\n"
+             << "\t<length>" << song.getSongLength() << "</length>\n"
+             << "\t<restart>" << song.getRestartPosition() << "</restart>\n"
+             << "\t<channels-count>" << song.getChannelsCount() << "</channels-count>\n"
+             << "\t<frequency-table>" 
+             << ((int)song.getFrequencyTableType() ? "linear" : "amiga") << "</frequency-table>\n" 
+             << "\t<bpm>" << song.getBpm() << "</bpm>\n"
+             << "\t<tempo>" << song.getTempo() << "</tempo>\n\n";
 
-        cout << "Patterns:\n";
+        cout << "\t<song-structure>";
+        int i = 0;
         for (auto n : song.getPatternsTable()) {
-            cout << "  " << to_string(n) << '\n';
+            if (!(i % 8)) {
+                cout << "\n\t\t";
+            }
+            cout << setw(3) << '#' << (int)n << " ";
+            i++;
         }
+        cout << "\n\t</song-structure>\n\n";
+
+        i = 0;
+        for (auto pattern : song.getPatterns()) {
+            int channelsCount = pattern.getChannelsCount();
+            int j = 0;
+            cout << "\t<pattern id=\"" << i << "\">";
+            
+            for (auto data : pattern.getData()) {
+                if (!(j % channelsCount)) {
+                    cout << "\n\t\t";
+                }
+                cout << data.toString() << " ";
+                j++;
+            }
+            cout << "\n\t</pattern>\n";
+            i++;
+        }
+        
+        cout << "</audioml>";
     }
 
     void CommandController::doTestwrite(int argc, char *argv[]) {

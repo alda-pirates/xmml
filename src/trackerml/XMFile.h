@@ -29,7 +29,7 @@ namespace trackerml {
         vector<XMPattern> patterns;
 
         void writeHeader(ostream &os);
-        void readHeader(istream &is);
+        pair<int, int> readHeader(istream &is);
 
       public:
         XMFile();
@@ -54,14 +54,14 @@ namespace trackerml {
         void setFrequencyTableType(FrequencyTableType type);
 
         void addInstrument(XMInstrument instrument);
-        void setInstrument(size_t n, XMInstrument instrument);
+        void setInstrument(int n, XMInstrument instrument);
         void removeInstrument(XMInstrument instrument);
-        size_t instrumentsCount();
+        int instrumentsCount();
 
         void addPattern(XMPattern pattern);
-        void setPattern(size_t n, XMPattern pattern);
+        void setPattern(int n, XMPattern pattern);
         void removePattern(XMPattern pattern);
-        size_t patternsCount();
+        int patternsCount();
 
         void write(ostream &os);
         void read(istream &is);
