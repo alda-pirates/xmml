@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Read binary data of uchars from stdin and plot using gnuplot
+
+while getopts ":t" opt; do
+  case $opt in
+    t)
+      t=1
+      ;;
+    \?)
+      echo "Usage: ./plot.sh [[-f <from>] -t <to>] <filename>"
+      exit 1
+      ;;
+  esac
+done
+
+echo $t
+
+if [[ -n $t ]]
+then
+  gnuplot -p -e "plot '<cat' using 1 with lines title ''"
+else
+  gnuplot -p -e "plot '<cat' binary format='%uchar' using 1 with lines title ''"
+fi
