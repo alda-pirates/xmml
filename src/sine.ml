@@ -4,9 +4,23 @@ let master_volume = 0.5
 
 let pi = 4. *. atan 1.
 
+type pitch = Note of int * int | NoteValue of int
+type duration = Duration of int * bool | DurationValue of int
+type volume = float
+type note = { pitch: pitch; duration: duration; volume: volume }
+
+let render instrument lst =
+  None
+
 let freq note pitch =
   let p = float (pitch * 12 + note - 57) /. 12. in
   2. ** p *. 440.
+
+let rec zip lst_a lst_b =
+  match (lst_a, lst_b) with
+    ([], []) -> []
+  | (hd_a::tl_a, hd_b::tl_b) -> (hd_a, hd_b) :: zip tl_a tl_b
+  | _ -> []
 
 let bound lower upper x =
   if x < lower then lower
@@ -32,8 +46,6 @@ let triangle freq phase t =
 
 let sum_signals lst =
   List.fold_left (fun acc x -> x +. acc) 0. lst
-
-let linear_envelope lst =
 
 let () =
   let rec loop t =
