@@ -27,8 +27,7 @@ sequence_of_notes ::= note
 
 # Grammar for envelopes
 
-Example:
-  0 +10:10 +2:100
+Example: `0 +10:10 +2:100`
 
 ```
 zero ::= "0" ;
