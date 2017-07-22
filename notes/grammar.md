@@ -1,5 +1,6 @@
 # Grammar for sequences of notes
 
+```
 note_name ::= "c" | "d" | "e" | "f" | "g" | "a" | "b" ;
 rest ::= "r" ;
 alteration ::= "#" | "b" ;
@@ -22,12 +23,14 @@ note ::= note_name
 
 sequence_of_notes ::= note
                       | note " " sequence_of_notes ;
+```
 
 # Grammar for envelopes
 
 Example:
   0 +10:10 +2:100
 
+```
 zero ::= "0" ;
 positive_digit ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 digit ::= zero | positive_digit ;
@@ -37,3 +40,4 @@ positive_integer ::= positive_digit | positive_digit digits ;
 envelope_term ::= "+" positive_integer ":" non_negative_integer ;
 envelope_terms ::= envelope_term | envelope_term " " envelope_terms ;
 evelope ::= non_negative_integer | non_negative_integer envelope_terms ;
+```
