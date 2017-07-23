@@ -1,13 +1,9 @@
 let bpm = 250.
-let time_signature = (4, 4)
+let reference_duration = 0.25
 let sample_rate = 48000.
 let master_volume = 0.5
 
 let pi = 4. *. atan 1.
-
-let freq note octave =
-  let p = float (octave * 12 + note - 57) /. 12. in
-  2. ** p *. 440.
 
 type note_letter = Note_letter of char
 and note_accent = Sharp | Flat
@@ -19,84 +15,75 @@ and triplet = Triplet
 and duration = Duration of duration_letter * dot option * triplet option
 and note = Note of pitch * duration option
 
-let int_of_note_letter c =
-  match c with
-  | 'c' -> 0
-  | 'd' -> 2
-  | 'e' -> 4
-  | 'f' -> 5
-  | 'g' -> 7
-  | 'a' -> 9
-  | 'b' -> 11
-  | _ -> raise ( Invalid_argument ( "Invalid letter `"
-                                    ^ ( String.make 1 c )
-                                    ^ "` for note" ) )
+let rec list_car s = match s with
+  | "" -> []
+  | s -> (String.get s 0 ) :: (list_car (String.sub s 1 ( (String.length s)-1) ) )
 
-let int_of_duration_letter c =
-  match c with
-  | 'w' -> 1
-  | 'h' -> 2
-  | 'q' -> 4
-  | 'e' -> 8
-  | 's' -> 16
-  | 't' -> 32
-  | 'x' -> 64
-  | _ -> raise ( Invalid_argument ( "Invalid letter `"
-                                    ^ ( String.make 1 c )
-                                    ^ "` for duration" ) )
+let float_of_note s =
+  let error = Invalid_argument ( "Invalid note `" ^ s ^ "`" ) in
+  let accent lst = match lst with
+    | [] -> 0.
+    | '#' :: [] -> 1.
+    | 'b' :: [] -> -1.
+    | _ -> raise ( error ) in
+  match list_car s with
+  | [] -> raise ( error )
+  | c :: rest ->
+    let a =  accent rest in
+    ( match c with
+      | 'c' -> 0.
+      | 'd' -> 2.
+      | 'e' -> 4.
+      | 'f' -> 5.
+      | 'g' -> 7.
+      | 'a' -> 9.
+      | 'b' -> 11.
+      | 'p' -> ( match String.sub s 1 ( String.length s ) with
+          | "" -> raise ( error )
+          | s -> float_of_string ( String.sub s 1 (String.length s - 1) ) )
+      | _ -> raise ( error ) ) +. a
+
+let float_of_duration s =
+  let error = Invalid_argument ( "Invalid duration `" ^ s ^ "`" ) in
+  match list_car s with
+  | 'z' :: [] -> 16.
+  | 'l' :: [] -> 8.
+  | 'i' :: [] -> 4.
+  | 'u' :: [] -> 2.
+  | 'w' :: [] -> 1.
+  | 'h' :: [] -> 0.5 (* 1/2 *)
+  | 'q' :: [] -> 0.25 (* 1/4 *)
+  | 'e' :: [] -> 0.125 (* 1/8 *)
+  | 's' :: [] -> 0.0625 (* 1/16 *)
+  | 't' :: [] -> 0.03125 (* 1/32 *)
+  | 'x' :: [] -> 0.015625 (* 1/64 *)
+  | 'd' :: rest -> ( match rest with
+    | [] -> raise error
+    | rest ->  0.015625 *. (
+        float_of_string ( String.sub s 1 ( String.length s - 1 ) ) ) )
+  | _ -> raise error
 
 let rec freq_of_pitch pitch last_octave =
+  let freq note octave =
+    let p = (octave *. 12. +. note -. 57.) /. 12. in
+    2. ** p *. 440. in
   match pitch with
-    Pitch ( letter, accent, None )
-    -> freq_of_pitch
-         ( Pitch ( letter, accent,
-                   Some ( Octave last_octave ) ) )
-         last_octave
-  | Pitch ( Note_letter c, None, Some ( Octave octave ) )
-    -> freq ( int_of_note_letter c ) octave
-  | Pitch ( Note_letter c, Some Sharp, Some ( Octave octave ) )
-    -> freq ( ( int_of_note_letter c ) + 1 ) octave
-  | Pitch ( Note_letter c, Some Flat, Some ( Octave octave ) )
-    -> freq ( ( int_of_note_letter c ) - 1 ) octave
-
-let freq note octave =
-  let base_freq =
-    match note with
-    | "cb"  -> 11.
-    | "c"  -> 0.
-    | "c#" -> 1.
-    | "db"  -> 1.
-    | "d"  -> 2.
-    | "d#"  -> 3.
-    | "eb"  -> 3.
-    | "e"  -> 4.
-    | "e#"  -> 5.
-    | "fb" -> 4.
-    | "f" -> 5.
-    | "f#" -> 6.
-    | "gb" -> 6.
-    | "g" -> 7.
-    | "g#" -> 8.
-    | "ab" -> 8.
-    | "a" -> 9.
-    | "a#" -> 10.
-    | "bb" -> 10.
-    | "b" -> 11.
-    | "b#" -> 0.
-    | _ -> raise ( Invalid_argument ( "Invalid note `"
-                                      ^ note ^ "`") ) in
-
-  let p = ( float octave *. 12. +. base_freq -. 57. ) /. 12. in
-  2. ** p *. 440.
-
-
-(* let float_of_duration dur last_duration =
-  match dur with
-    Duration ( Duration_letter letter, dot, _ )
-    -> ( let dot_mult = ( match dot with None -> 1. | Some Dot -> 0.5 ) in
-         let note_duration ) *)
-
-
+  | Pitch ( letter, accent, None ) ->
+    freq_of_pitch
+      ( Pitch ( letter, accent, Some ( Octave last_octave ) ) )
+      last_octave
+  | Pitch ( Note_letter c, None, Some ( Octave octave ) ) ->
+    freq
+      ( float_of_note ( String.make 1 c ) )
+      ( float octave )
+  | Pitch ( Note_letter c, Some Sharp, Some ( Octave octave ) ) ->
+    freq
+      ( float_of_note ( String.make 1 c ) +. 1. )
+      ( float octave )
+  | Pitch ( Note_letter c, Some Flat, Some ( Octave octave ) ) ->
+    freq
+      ( float_of_note ( String.make 1 c ) -. 1. )
+      ( float octave )
 
 let notes = [
   Note ( Pitch ( Note_letter 'c', None, Some ( Octave 4 ) ),
@@ -108,19 +95,10 @@ let notes = [
   Note ( Pitch ( Note_letter 'a', None, None ), None );
   Note ( Pitch ( Note_letter 'b', None, None ), None ) ]
 
-(* let float_list_of_note wav freq dur t =
-  0
-
-let rec float_list_notes wav notes =
-  match notes with
-  | [] -> []
-  | note :: rest -> (float_list_of_note wav note 0) :: (float_list_notes wav rest)
-
-let rec zip lst_a lst_b =
-  match (lst_a, lst_b) with
-    ([], []) -> []
-  | (hd_a::tl_a, hd_b::tl_b) -> (hd_a, hd_b) :: zip tl_a tl_b
-  | _ -> [] *)
+let freq note octave =
+let base_freq = float_of_note note in
+let p = ( float octave *. 12. +. base_freq -. 57. ) /. 12. in
+2. ** p *. 440.
 
 let bound lower upper x =
   if x < lower then lower
@@ -131,16 +109,16 @@ let byte_of_sample sample =
   bound 0 255 (int_of_float (255. *. ((0.5 *. sample) +. 0.5)))
 
 let sine freq phase t =
-  cos ((freq /. sample_rate *. t +. phase) *. 2. *. pi)
+  cos ((freq *. t +. phase) *. 2. *. pi)
 
 let square freq phase t =
-  floor (mod_float (t /. sample_rate *. 2. *. freq) 2.) *. 2. -. 1.
+  floor (mod_float (t *. 2. *. freq) 2.) *. 2. -. 1.
 
 let saw freq phase t =
-  mod_float (t /. sample_rate *. freq) 1. *. 2. -. 1.
+  mod_float (t *. freq) 1. *. 2. -. 1.
 
 let triangle freq phase t =
-  abs_float (mod_float (t /. sample_rate *. freq) 1. -. 0.5)
+  abs_float (mod_float (t *. freq) 1. -. 0.5)
 
 (* float_mod (t /. sample_rate *. freq) 1.  *)
 
@@ -173,8 +151,9 @@ let ( !$ ) a = ( fun t ->
   | Some x -> x )
 
 (* Takes a (float -> float) function and return a signal *)
-let signal ( f: float -> float ) = fun t -> Some (f t)
+let signal ( f: float -> float ) = ( fun t -> Some (f t) )
 
+(* TODO: a function that takes a *)
 (* TODO: a function that turns "c4h d e f g a b" into a function (float -> float) *)
 
 let () =
@@ -182,7 +161,7 @@ let () =
           0.1 **$ signal (saw (freq "a" 4) 0.) *$
           0.3 **$ signal (triangle (freq "d#" 4) 0.) in
   let rec loop t =
-    ( match f t with
+    ( match f (t /. sample_rate) with
       | None -> ()
       | Some x ->
         output_byte stdout (byte_of_sample x);
