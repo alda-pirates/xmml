@@ -59,6 +59,37 @@ let rec freq_of_pitch pitch last_octave =
   | Pitch ( Note_letter c, Some Flat, Some ( Octave octave ) )
     -> freq ( ( int_of_note_letter c ) - 1 ) octave
 
+let freq note octave =
+  let base_freq =
+    match note with
+    | "cb"  -> 11.
+    | "c"  -> 0.
+    | "c#" -> 1.
+    | "db"  -> 1.
+    | "d"  -> 2.
+    | "d#"  -> 3.
+    | "eb"  -> 3.
+    | "e"  -> 4.
+    | "e#"  -> 5.
+    | "fb" -> 4.
+    | "f" -> 5.
+    | "f#" -> 6.
+    | "gb" -> 6.
+    | "g" -> 7.
+    | "g#" -> 8.
+    | "ab" -> 8.
+    | "a" -> 9.
+    | "a#" -> 10.
+    | "bb" -> 10.
+    | "b" -> 11.
+    | "b#" -> 0.
+    | _ -> raise ( Invalid_argument ( "Invalid note `"
+                                      ^ note ^ "`") ) in
+
+  let p = ( float octave *. 12. +. base_freq -. 57. ) /. 12. in
+  2. ** p *. 440.
+
+
 (* let float_of_duration dur last_duration =
   match dur with
     Duration ( Duration_letter letter, dot, _ )
@@ -113,19 +144,47 @@ let triangle freq phase t =
 
 (* float_mod (t /. sample_rate *. freq) 1.  *)
 
-let sum_signals lst =
+let float_sum lst =
   List.fold_left (fun acc x -> x +. acc) 0. lst
 
-(* A function that turns "c4h d e f g a b"  *)
+type signal = ( float -> float option )
+
+(* Scalar product of a signal : amplify the signal *)
+let ( **$ ) s a = fun ( t: float ) -> match a t with
+  | None -> None
+  | Some x -> Some ( s *. x )
+
+(* Product of two signals : signals are added in parallel *)
+let ( *$ ) a b = fun ( t: float ) -> match (a t, b t) with
+  | (None, None) -> None
+  | (Some x, None) -> Some x
+  | (None, Some x) -> Some x
+  | (Some x, Some y) -> Some ( x +. y )
+
+(* Sum of two signals : sinals are added sequentially *)
+let ( +$ ) a b = ( fun ( t: float ) ->
+  match a t with
+  | None -> b t
+  | x -> x )
+
+let ( !$ ) a = ( fun t ->
+  match a t with
+  | None -> 0.
+  | Some x -> x )
+
+(* Takes a (float -> float) function and return a signal *)
+let signal ( f: float -> float ) = fun t -> Some (f t)
+
+(* TODO: a function that turns "c4h d e f g a b" into a function (float -> float) *)
 
 let () =
+  let f = 1.  **$ signal (sine (freq "c" 4) 0.) *$
+          0.1 **$ signal (saw (freq "a" 4) 0.) *$
+          0.3 **$ signal (triangle (freq "d#" 4) 0.) in
   let rec loop t =
-    let r = master_volume *. sum_signals [
-        1.  *. sine (freq 0 4) 0. t;
-        0.1 *. saw (freq 7 4) 0. t;
-        0.3 *. triangle (freq 4 4) 0. t
-      ] in
-    output_byte stdout (byte_of_sample r);
-    (* Printf.printf "%.2f\n" (sine (freq 0 4) 0. t); *)
-    loop (t +. 1.) in
+    ( match f t with
+      | None -> ()
+      | Some x ->
+        output_byte stdout (byte_of_sample x);
+        loop (t +. 1.) ) in
   loop 0.
