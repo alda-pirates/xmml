@@ -1,5 +1,3 @@
-open TimeOp
-
 let bpm = 250.
 let reference_duration = 0.25
 let sample_rate = 48000.
@@ -7,15 +5,11 @@ let master_volume = 0.5
 
 let pi = 4. *. atan 1.
 
-type note_letter = Note_letter of char
-and note_accent = Sharp | Flat
-and octave = Octave of int
-and pitch = Pitch of note_letter * note_accent option * octave option
-and duration_letter = Duration_letter of char
-and dot = Dot
-and triplet = Triplet
-and duration = Duration of duration_letter * dot option * triplet option
-and note = Note of pitch * duration option
+let freq note octave =
+let p = ( octave *. 12. +. note -. 57. ) /. 12. in
+2. ** p *. 440.
+
+let c4_freq = freq 0.0 4.0
 
 let rec explode s = match s with
   | "" -> []
@@ -65,44 +59,6 @@ let float_of_duration s =
         float_of_string ( String.sub s 1 ( String.length s - 1 ) ) ) )
   | _ -> raise error
 
-let rec freq_of_pitch pitch last_octave =
-  let freq note octave =
-    let p = (octave *. 12. +. note -. 57.) /. 12. in
-    2. ** p *. 440. in
-  match pitch with
-  | Pitch ( letter, accent, None ) ->
-    freq_of_pitch
-      ( Pitch ( letter, accent, Some ( Octave last_octave ) ) )
-      last_octave
-  | Pitch ( Note_letter c, None, Some ( Octave octave ) ) ->
-    freq
-      ( float_of_note ( String.make 1 c ) )
-      ( float octave )
-  | Pitch ( Note_letter c, Some Sharp, Some ( Octave octave ) ) ->
-    freq
-      ( float_of_note ( String.make 1 c ) +. 1. )
-      ( float octave )
-  | Pitch ( Note_letter c, Some Flat, Some ( Octave octave ) ) ->
-    freq
-      ( float_of_note ( String.make 1 c ) -. 1. )
-      ( float octave )
-
-let notes = [
-  Note ( Pitch ( Note_letter 'c', None, Some ( Octave 4 ) ),
-         Some ( Duration ( Duration_letter 'w', None, None )  ) );
-  Note ( Pitch ( Note_letter 'd', None, None ), None );
-  Note ( Pitch ( Note_letter 'e', None, None ), None );
-  Note ( Pitch ( Note_letter 'f', None, None ), None );
-  Note ( Pitch ( Note_letter 'g', None, None ), None );
-  Note ( Pitch ( Note_letter 'a', None, None ), None );
-  Note ( Pitch ( Note_letter 'b', None, None ), None ) ]
-
-let freq note octave =
-  let p = ( octave *. 12. +. note -. 57. ) /. 12. in
-  2. ** p *. 440.
-
-let c4_freq = freq 0.0 4.0
-
 let note note octave =
   let note_f = float_of_note note in
   let octave_f = float octave in
@@ -128,49 +84,53 @@ let saw t =
 let triangle t =
   abs_float ( mod_float t 1. -. 0.5 )
 
-let float_sum lst =
-  List.fold_left ( fun acc x -> x +. acc ) 0. lst
-
-type signal = float -> float option
-
-(* Scalar product of a signal : amplify the signal *)
-let ( *! ) a f = fun ( t: float ) -> a *. f t
-
-let ( *> ) a f = fun ( t: float ) -> f ( a *. t )
-
-(* Sum of two signals : signals are added in parallel *)
-let ( +! ) f g = fun ( t: float ) -> ( f t ) +. ( g t )
-
-(* Concatenation of two signals : sinals are added sequentially *)
-let ( ^! ) f (g, l) = fun ( t: float ) ->
-  if t < l then f t
-  else g (t -. l)
-
-(* Takes a `float -> float` function and return a signal *)
-let signal ( f: float -> float ) = fun t -> Some (f t)
-
-(* TODO:
-   A function `instrument: (freq: float) -> (time: float) -> float` *)
-(* Base frequency of an instrument is c4 = 261.6256 *)
-let instrument f  =
-  let c4_freq = freq 0.0 4.0 in
-  fun freq t -> f ( c4_freq /. freq *. t )
-
-(* TODO:
-   A function that turns "c4h d e f g a b" into
-   a function `(time: float) -> float` *)
-
 let snd f freq = fun t -> f (freq *. t)
 
 let dur d f = fun (t : float) -> if t < d then f t else 0.0
 
-let delay f d = fun t -> f ( t -. d )
+let scale a f = fun t -> a *. ( f t )
+
+let scale_freq a f = fun t -> f ( a *. t )
+
+let add f g = fun t -> ( f t ) +. ( g t )
+
+let prod f g = fun t -> ( f t ) *. ( g t )
+
+let prod_freq f g = fun t -> g ( ( f t ) *. t )
+
+let delay d f = fun t -> f ( t -. d )
+
+let cycle d f = fun t -> f ( mod_float t d )
+
+let right_cut b f = fun t -> if t < b then f t else 0.0
+
+let left_cut b f = fun t -> if t < b then 0.0 else f t
+
+let cut a b f = fun t ->
+if t < b then 0.0
+else if t >= b then 0.0
+else f t
 
 let rec play f dt notes = match notes with
   | [] -> fun t -> 0.0
-  | (d, freq) :: tl -> fun (t : float) ->
-    if t < dt +. d then f (freq *. t)
-    else (play f (dt +. d) tl) t
+  | ( d, freq ) :: tl -> fun t ->
+    if t < dt +. d then f ( freq *. t )
+    else ( play f ( dt +. d ) tl ) t
+
+(* Scalar product of a function : amplify the function *)
+let ( *! ) a f = scale a f
+
+(* Scalar product of two functions : volume envelope function *)
+let ( *!@ ) f g = prod f g
+
+(* Frequency product of a function : for frequency modulation *)
+let ( *> ) a f = scale_freq a f
+
+(* Frequency product of two function : frequency modulation with envelope function *)
+let ( *>@ ) f g = prod_freq f g
+
+(* Sum of two signals : signals are added in parallel *)
+let ( +! ) f g = add f g
 
 let () =
   let f = (1.0 /. c4_freq) *> (
