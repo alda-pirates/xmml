@@ -1,6 +1,6 @@
 let bpm = 250.
 let reference_duration = 0.25
-let sample_rate = 48000.
+let sample_rate = 44100.
 let master_volume = 0.5
 
 let pi = 4. *. atan 1.
@@ -112,9 +112,12 @@ else if t >= b then 0.0
 else f t
 
 let rec play f dt notes = match notes with
-  | [] -> fun t -> 0.0
+  | [] -> fun t -> None
   | ( d, freq ) :: tl -> fun t ->
-    if t < dt +. d then f ( freq *. t )
+    let a = 0.0 in
+    if t < dt +. d -. a then Some (f ( freq *. t ))
+    else if t < dt +. d then
+      Some (( t -. dt -. d -. a  ) ** 2.0 /. a ** 2.0 *. ( f ( freq *. t ) ))
     else ( play f ( dt +. d ) tl ) t
 
 (* Scalar product of a function : amplify the function *)
@@ -135,18 +138,25 @@ let ( +! ) f g = add f g
 let () =
   let f = (1.0 /. c4_freq) *> (
           1.0 *! snd sine (note "c" 4) +!
-          0.1 *! snd saw (note "a" 4) +!
+          0.1 *! snd saw (note "f" 4) +!
           0.3 *! snd triangle (note "d#" 4) ) in
   let g = play f 0.0 [
-      (0.25, note "c" 4);
+      (0.25, note "a" 4);
+      (0.25, note "g" 4);
+      (0.5, note "f#" 4);
+      (0.25, note "d" 3);
+      (0.25, note "f" 3);
+      (0.25, note "b" 3);
       (0.25, note "d" 4);
       (0.5, note "e" 4);
-      (0.25, note "f" 4);
-      (0.25, note "g" 4);
-      (0.5, note "a" 4);
-      (0.5, note "b" 4) ] in
+      (0.5, note "f" 3);
+      (0.5, note "e" 3);
+      (1.0, note "b" 2) ] in
   let rec loop t =
     let x = g (t /. sample_rate) in
-        output_byte stdout (byte_of_sample x);
-        loop (t +. 1.) in
+    match x with
+    | None -> ()
+    | Some x ->
+      output_byte stdout (byte_of_sample x);
+      loop (t +. 1.) in
   loop 0.
