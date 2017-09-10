@@ -79,24 +79,43 @@ let byte_of_sample sample =
 let sine t =
   sin ( t *. 2. *. pi )
 
-let square t =
-  floor ( mod_float ( t *. 2. ) 2. ) *. 2. -. 1.
+let pulse duty t =
+  let t = mod_float (t -. 0.5) 1. in
+  if t < duty then
+    1.0
+  else
+    -1.0
+
+let square t = pulse 0.5
 
 let saw t =
-  mod_float t 1. *. 2. -. 1.
+  2. *. mod_float ( t -. 0.5 ) 1. -. 1.
 
 let triangle t =
-  abs_float ( mod_float t 1. -. 0.5 )
+  4. *. abs_float ( mod_float ( t +. 0.25 ) 1. -. 0.5 ) -. 1.
 
-let scale a f = fun t -> a *. ( f t )
 
-let scale_time a f = fun t -> f ( a *. t )
+  (* class  Monad m  where
+      (>>=)            :: m a -> (a -> m b) -> m b
+      (>>)             :: m a -> m b -> m b
+      return           :: a -> m a
+      fail             :: String -> m a
 
-let add f g = fun t -> ( f t ) +. ( g t )
+      m >> k           =  m >>= \_ -> k *)
 
-let prod f g = fun t -> ( f t ) *. ( g t )
+let scale a f = fun t -> f t *. a
 
-let prod_time f g = fun t -> g ( ( f t ) *. t )
+let add f g = fun t -> f t +. g t
+
+let prod f g = fun t -> f t *. g t
+
+let time_scale a f = fun t -> f ( t *. a )
+
+let time_add f g = fun t -> g ( f t +. t )
+
+let time_prod f g = fun t -> g ( f t *. t )
+
+let time_comp f g = fun t -> g ( f t )
 
 let delay shf f = fun t -> f ( t -. shf )
 
@@ -134,37 +153,37 @@ let play f notes =
   play' f 0.0 notes
 
 (* Scalar product of a function : amplify the function *)
-let ( *! ) a f = scale a f
+let ( *< ) a f = scale a f
 
-(* Scalar product of two functions : volume envelope function *)
-let ( *!@ ) f g = prod f g
-
-(* Frequency scaling of a function : for frequency modulation *)
-let ( *> ) a f = scale_time a f
-
-(* Frequency product of two function : frequency modulation with envelope function *)
-let ( *>@ ) f g = prod_time f g
+(* Frequency scaling of a function : amplify or attenuate the frequency with a scalar *)
+let ( *> ) a f = time_scale a f
 
 (* Sum of two signals : signals are added in parallel *)
-let ( +! ) f g = add f g
+let ( +<> ) f g = add f g
+
+(* Product of two functions : volume envelope function *)
+let ( *<> ) f g = prod f g
+
+(* Frequency product of two functions : frequency modulation with envelope function *)
+let ( *>> ) f g = time_prod f g
 
 let () =
   let f = (1.0 /. c4_freq) *> (
-      1.0 *! scale_time (note "c" 4) sine +!
-      0.1 *! scale_time (note "f" 4) saw  +!
-      0.3 *! scale_time (note "d#" 4) triangle ) in
+      1.0 *< (note "c" 4 *> sine) +<>
+      0.1 *< (note "f" 4 *> saw)  +<>
+      0.1 *< (note "d#" 4 *> triangle) ) in
   let g = play f [
-      (0.1, note "a" 4, 1.0);
-      (0.1, note "g" 4, 1.0);
-      (0.2, note "f#" 4, 1.0);
-      (0.1, note "d" 3, 1.0);
-      (0.1, note "f" 3, 1.0);
-      (0.1, note "b" 3, 1.0);
-      (0.1, note "d" 4, 1.0);
-      (0.2, note "e" 4, 1.0);
+      (0.2, note "a" 4, 1.0);
+      (0.2, note "g" 4, 1.0);
+      (0.4, note "f#" 4, 1.0);
+      (0.2, note "d" 3, 1.0);
       (0.2, note "f" 3, 1.0);
-      (0.2, note "e" 3, 1.0);
-      (0.4, note "b" 2, 1.0) ] in
+      (0.2, note "b" 3, 1.0);
+      (0.2, note "d" 4, 1.0);
+      (0.4, note "e" 4, 1.0);
+      (0.4, note "f" 3, 1.0);
+      (0.4, note "e" 3, 1.0);
+      (0.8, note "b" 2, 1.0) ] in
   let rec loop t =
     let x = g (t /. sample_rate) in
     match x with

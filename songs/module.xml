@@ -1,85 +1,42 @@
-<tracker-ml>
-    <header>
-        <title>My Song Title</title>
-        <version>0.1</version>
-        <speed>3</speed>
-        <bpm>125</bpm>
-    </header>
-        
-    <patterns-table repeat="2">
-        #drum-loop
-        #verse-1
-        #verse-2
-        #verse-1
-        #drum-and-bass-loop
-    </patterns-table>
-    
-    <!-- Instruments -->
-    <instrument id="kick"><sample href="./samples/kick-sample.wav" /></instrument>
-    <instrument id="snare"><sample href="./samples/snare-sample.wav" /></instrument>
-    <instrument id="hi-hat"><sample href="./samples/hi-hat-sample.wav" /></instrument>
-    <instrument id="bass"><sample href="./samples/bass-sample.wav" /></instrument>
-    
-    <!-- Patterns -->
-    <pattern id="drum-loop">
-<!-- 
-This is a comment
-A simple 3 channels drum loop
-Line number appears before the `|` character, it can be in decimal or hex format
-Channels appear after the `|` character and are separated by `;`
-Format for channel info is: [pitch],[instrument-id],[volume-instruction],[effect]
-Pitch is [^a-fA-F](?:-|#)[^1-7]
-Instrument-id is a number (decimal or hex) or an id reference
--->
+<track-ml>
+  <!-- This is a comment -->
 
-0x00| c-4,#kick;           ; c-4,#hi-hat;
-0x02|          ;           ; c-4,#hi-hat;
-0x04| c-4,#kick; c-4,#snare; c-4,#hi-hat;
-0x06|          ;           ; c-4,#hi-hat;
-<!-- -->
-    </pattern>
-        
-    <pattern id="bass-loop">
-0x00| g-2,#bass;
-0x02| g-3,#bass;
-0x04| g-2,#bass;
-0x06| g-3,#bass;
-0x08| g-2,#bass;
-0x0a| g-3,#bass;
-0x0c| g-2,#bass;
-0x0e| g-3,#bass;
-0x10| d#2,#bass;
-0x12| d#3,#bass;
-0x14| d#2,#bass;
-0x16| d#3,#bass;
-0x18| d#2,#bass;
-0x1a| d#3,#bass;
-0x1c| d#2,#bass;
-0x1e| d#3,#bass;
-0x20| f-2,#bass;
-0x22| f-3,#bass;
-0x24| f-2,#bass;
-0x26| f-3,#bass;
-0x28| f-2,#bass;
-0x2a| f-3,#bass;
-0x2c| f-2,#bass;
-0x2e| f-3,#bass;
-0x30| c-2,#bass;
-0x32| c-3,#bass;
-0x34| c-2,#bass;
-0x36| c-3,#bass;
-0x38| c-2,#bass;
-0x3a| c-3,#bass;
-0x3c| c-2,#bass;
-0x3e| c-3,#bass;
-    </pattern>
+  <header>
+    <title>My Song Title</title>
+    <description>Version 0.1</description>
+    <tempo>125</tempo>
+  </header>
 
-    <pattern id="drum-and-bass-loop">
-        <zip-patterns>
-            <repeat-pattern count="8">
-                <pattern href="#drum-loop" />
-            </repeat-pattern>
-            <pattern href="#bass-loop" />
-        </zip-patterns>
-    </pattern>
-</tracker-ml>
+  <play>
+    <pattern href="#drum-loop" />
+    <pattern href="#bass-loop" />
+  </play>
+
+  <!-- Sample instruments -->
+  <audio id="kick" src="./samples/kick-sample.wav" />
+  <audio id="snare" src="./samples/snare-sample.wav" />
+  <audio id="hi-hat" src="./samples/hi-hat-sample.wav" />
+  <audio id="bass" src="./samples/bass-sample.wav" />
+
+  <!-- envelopes -->
+  <envelope interpolation="linear">
+    0 0;
+    0.2 1;
+    0.8 1;
+    1 1
+  </envelope>
+
+  <!-- Patterns -->
+  <para id="drum-loop">
+    <repeat count="2">#kick c4 4</repeat>
+    <pattern>r 4; #snare c4 4</pattern>
+    <repeat count="4">#hi-hat c4 2</repeat>
+  </para>
+
+  <seq id="bass-loop">
+    <repeat count="4">#bass g2 2 1; g3</repeat>
+    <repeat count="4">#bass d#2 2 1; d#3</repeat>
+    <repeat count="4">#bass f2 2 1; f3</repeat>
+    <repeat count="4">#bass c2 2 1; c3</repeat>
+  </seq>
+</track-ml>
