@@ -168,11 +168,12 @@ let ( *<> ) f g = prod f g
 let ( *>> ) f g = time_prod f g
 
 let () =
-  let f = (1.0 /. c4_freq) *> (
+  let synth = (1.0 /. c4_freq) *> (
       1.0 *< (note "c" 4 *> sine) +<>
-      0.1 *< (note "f" 4 *> saw)  +<>
-      0.1 *< (note "d#" 4 *> triangle) ) in
-  let g = play f [
+      0.5 *< (note "f" 4 *> saw)  +<>
+      0.5 *< (note "d#" 4 *> triangle) ) in
+  let flange = (fun t -> 0.6 *. pulse (triangle (t /. 600.) *. 0.4 +. 0.5) t) in
+  let g = play flange [
       (0.2, note "a" 4, 1.0);
       (0.2, note "g" 4, 1.0);
       (0.4, note "f#" 4, 1.0);
