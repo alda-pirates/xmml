@@ -3,6 +3,10 @@ let reference_duration = 0.25
 let sample_rate = 44100.
 let master_volume = 0.5
 
+type 'a variant =
+  | Const of 'a
+  | Func of (float -> 'a)
+
 let pi = 4. *. atan 1.
 
 let freq note octave =
@@ -73,7 +77,7 @@ let byte_of_sample sample =
   bound 0 255 ( int_of_float ( 255. *. ( ( 0.5 *. sample ) +. 0.5 ) ) )
 
 let sine t =
-  cos ( t *. 2. *. pi )
+  sin ( t *. 2. *. pi )
 
 let square t =
   floor ( mod_float ( t *. 2. ) 2. ) *. 2. -. 1.
@@ -84,23 +88,19 @@ let saw t =
 let triangle t =
   abs_float ( mod_float t 1. -. 0.5 )
 
-let snd f freq = fun t -> f (freq *. t)
-
-let dur d f = fun (t : float) -> if t < d then f t else 0.0
-
 let scale a f = fun t -> a *. ( f t )
 
-let scale_freq a f = fun t -> f ( a *. t )
+let scale_time a f = fun t -> f ( a *. t )
 
 let add f g = fun t -> ( f t ) +. ( g t )
 
 let prod f g = fun t -> ( f t ) *. ( g t )
 
-let prod_freq f g = fun t -> g ( ( f t ) *. t )
+let prod_time f g = fun t -> g ( ( f t ) *. t )
 
-let delay d f = fun t -> f ( t -. d )
+let delay shf f = fun t -> f ( t -. shf )
 
-let cycle d f = fun t -> f ( mod_float t d )
+let cycle len f = fun t -> f ( mod_float t len )
 
 let right_cut b f = fun t -> if t < b then f t else 0.0
 
@@ -111,14 +111,27 @@ if t < b then 0.0
 else if t >= b then 0.0
 else f t
 
-let rec play f dt notes = match notes with
-  | [] -> fun t -> None
-  | ( d, freq ) :: tl -> fun t ->
-    let a = 0.0 in
-    if t < dt +. d -. a then Some (f ( freq *. t ))
-    else if t < dt +. d then
-      Some (( t -. dt -. d -. a  ) ** 2.0 /. a ** 2.0 *. ( f ( freq *. t ) ))
-    else ( play f ( dt +. d ) tl ) t
+(* Play notes using f as instrument *)
+let play f notes =
+  let rec play' f t0 notes =
+    match notes with
+    | [] -> fun t -> None
+    | ( dur, freq, vol ) :: rest -> fun t ->
+      if t < t0 +. dur then
+        let a = f ( freq *. t ) in
+        let env =
+          if t < t0 +. 0.005 then
+            ( t -. t0 ) /. 0.005
+          else if t < t0 +. dur -. 0.005 then
+            1.0
+          else
+            ( t0 +. dur -. t ) /. 0.005
+        in
+        Some  ( env *. vol *. a )
+      else
+        (play' f ( t0 +. dur ) rest ) t
+  in
+  play' f 0.0 notes
 
 (* Scalar product of a function : amplify the function *)
 let ( *! ) a f = scale a f
@@ -126,32 +139,32 @@ let ( *! ) a f = scale a f
 (* Scalar product of two functions : volume envelope function *)
 let ( *!@ ) f g = prod f g
 
-(* Frequency product of a function : for frequency modulation *)
-let ( *> ) a f = scale_freq a f
+(* Frequency scaling of a function : for frequency modulation *)
+let ( *> ) a f = scale_time a f
 
 (* Frequency product of two function : frequency modulation with envelope function *)
-let ( *>@ ) f g = prod_freq f g
+let ( *>@ ) f g = prod_time f g
 
 (* Sum of two signals : signals are added in parallel *)
 let ( +! ) f g = add f g
 
 let () =
   let f = (1.0 /. c4_freq) *> (
-          1.0 *! snd sine (note "c" 4) +!
-          0.1 *! snd saw (note "f" 4) +!
-          0.3 *! snd triangle (note "d#" 4) ) in
-  let g = play f 0.0 [
-      (0.25, note "a" 4);
-      (0.25, note "g" 4);
-      (0.5, note "f#" 4);
-      (0.25, note "d" 3);
-      (0.25, note "f" 3);
-      (0.25, note "b" 3);
-      (0.25, note "d" 4);
-      (0.5, note "e" 4);
-      (0.5, note "f" 3);
-      (0.5, note "e" 3);
-      (1.0, note "b" 2) ] in
+      1.0 *! scale_time (note "c" 4) sine +!
+      0.1 *! scale_time (note "f" 4) saw  +!
+      0.3 *! scale_time (note "d#" 4) triangle ) in
+  let g = play f [
+      (0.1, note "a" 4, 1.0);
+      (0.1, note "g" 4, 1.0);
+      (0.2, note "f#" 4, 1.0);
+      (0.1, note "d" 3, 1.0);
+      (0.1, note "f" 3, 1.0);
+      (0.1, note "b" 3, 1.0);
+      (0.1, note "d" 4, 1.0);
+      (0.2, note "e" 4, 1.0);
+      (0.2, note "f" 3, 1.0);
+      (0.2, note "e" 3, 1.0);
+      (0.4, note "b" 2, 1.0) ] in
   let rec loop t =
     let x = g (t /. sample_rate) in
     match x with
